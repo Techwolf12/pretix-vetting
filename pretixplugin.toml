@@ -1,0 +1,5 @@
+[plugin]
+package = "pretix-vetting"
+modules = [ "pretix_vetting" ]
+marketplace_name = "vetting"
+pypi = true

@@ -1,0 +1,43 @@
+[project]
+name = "pretix-vetting"
+dynamic = ["version"]
+description = "Let attendees vouch for applicants before their orders are approved"
+readme = "README.rst"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = ["pretix"]
+authors = [
+    {name = "Christiaan de Die le Clercq (techwolf12)", email = "contact@techwolf12.nl"},
+]
+maintainers = [
+    {name = "Christiaan de Die le Clercq (techwolf12)", email = "contact@techwolf12.nl"},
+]
+
+dependencies = [
+]
+
+[project.entry-points."pretix.plugin"]
+pretix_vetting = "pretix_vetting:PretixPluginMeta"
+
+[project.entry-points."distutils.commands"]
+build = "pretix_plugin_build.build:CustomBuild"
+
+[build-system]
+requires = [
+    "setuptools>=77",
+    "pretix-plugin-build",
+]
+
+[project.urls]
+homepage = "https://github.com/techwolf12/pretix-vetting"
+changelog = "https://github.com/techwolf12/pretix-vetting/blob/main/CHANGELOG.rst"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretix_vetting.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["pretix*"]
+namespaces = false

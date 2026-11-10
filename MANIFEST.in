@@ -1,0 +1,6 @@
+recursive-include pretix_vetting/static *
+recursive-include pretix_vetting/templates *
+recursive-include pretix_vetting/locale *
+include LICENSE
+include CHANGELOG.rst
+exclude .gitlab-ci.yml

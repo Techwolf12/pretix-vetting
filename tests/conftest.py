@@ -1,0 +1,91 @@
+import pytest
+import string
+from datetime import timedelta
+from decimal import Decimal
+from django.utils.timezone import now
+from django_scopes import scopes_disabled
+from pretix.base.models import Event, Item, Order, OrderPosition, Organizer, Team, User
+
+
+@pytest.fixture
+def organizer():
+    return Organizer.objects.create(name="Dummy", slug="dummy")
+
+
+@pytest.fixture
+def event(organizer):
+    return Event.objects.create(
+        organizer=organizer,
+        name="Dummy",
+        slug="dummy",
+        date_from=now(),
+        plugins="pretix_vetting",
+    )
+
+
+@pytest.fixture
+def item(event):
+    return Item.objects.create(
+        event=event, name="Ticket", default_price=Decimal("23.00")
+    )
+
+
+@pytest.fixture
+def other_item(event):
+    return Item.objects.create(
+        event=event, name="T-Shirt", default_price=Decimal("10.00")
+    )
+
+
+@pytest.fixture
+def make_order():
+    codes = iter(string.ascii_uppercase)
+
+    def make(*items):
+        event = items[0].event
+        code = "ORDER" + next(codes)
+        with scopes_disabled():
+            order = Order.objects.create(
+                code=code,
+                event=event,
+                email="dummy@dummy.test",
+                status=Order.STATUS_PENDING,
+                datetime=now(),
+                expires=now() + timedelta(days=10),
+                total=sum(i.default_price for i in items),
+                sales_channel=event.organizer.sales_channels.get(identifier="web"),
+            )
+            # The order search also matches the start of secret and pseudonymization_id.
+            # Both are random by default, so fix them to values without digits.
+            for n, i in enumerate(items):
+                suffix = code + string.ascii_uppercase[n]
+                OrderPosition.objects.create(
+                    order=order,
+                    item=i,
+                    variation=None,
+                    price=i.default_price,
+                    secret="SECRET" + suffix,
+                    pseudonymization_id="PSEUDO" + suffix,
+                )
+        return order
+
+    return make
+
+
+@pytest.fixture
+def admin_client(client, organizer, event):
+    user = User.objects.create_user("dummy@dummy.dummy", "dummy")
+    team = Team.objects.create(
+        organizer=organizer, all_events=True, all_event_permissions=True
+    )
+    team.members.add(user)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    return client
+
+
+@pytest.fixture(autouse=True)
+def no_scopes():
+    # pretix activates the organizer scope before plugin signals fire. Outside
+    # of a request we have no scope, so disable scoping for the tests.
+    with scopes_disabled():
+        yield
