@@ -1,0 +1,60 @@
+{% extends "pretixcontrol/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Vetting settings" %}{% endblock %}
+{% block inside %}
+    <h1>{% trans "Vetting settings" %}</h1>
+    <p>
+        {% blocktrans trimmed %}
+            Orders for the selected products wait for approval until existing attendees vouch for the applicant.
+            You can always approve or deny an order yourself.
+        {% endblocktrans %}
+    </p>
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <fieldset>
+            <legend>{% trans "General" %}</legend>
+            {% bootstrap_field form.vetting__products layout="control" %}
+            {% bootstrap_field form.vetting__methods layout="control" %}
+            {% bootstrap_field form.vetting__ask_motivation layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Who can vouch" %}</legend>
+            {% bootstrap_field form.vetting__voucher_sources layout="control" %}
+            {% bootstrap_field form.vetting__voucher_requires_paid layout="control" %}
+            {% bootstrap_field form.vetting__voucher_products layout="control" %}
+            {% bootstrap_field form.vetting__max_vouches_per_voucher layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Decision" %}</legend>
+            {% bootstrap_field form.vetting__threshold layout="control" %}
+            {% bootstrap_field form.vetting__outcome layout="control" %}
+            {% bootstrap_field form.vetting__negative_policy layout="control" %}
+            {% bootstrap_field form.vetting__negative_deny_count layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "References" %}</legend>
+            {% bootstrap_field form.vetting__references_min layout="control" %}
+            {% bootstrap_field form.vetting__references_max layout="control" %}
+            {% bootstrap_field form.vetting__deadline_days layout="control" %}
+            {% bootstrap_field form.vetting__reminder_days layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Invites" %}</legend>
+            {% bootstrap_field form.vetting__invites_per_attendee layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Emails" %}</legend>
+            {% bootstrap_field form.vetting__mail_subject_request layout="control" %}
+            {% bootstrap_field form.vetting__mail_text_request layout="control" %}
+            {% bootstrap_field form.vetting__mail_subject_reminder layout="control" %}
+            {% bootstrap_field form.vetting__mail_text_reminder layout="control" %}
+        </fieldset>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}
