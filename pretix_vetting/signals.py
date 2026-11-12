@@ -3,9 +3,20 @@ from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _, gettext_noop
 from i18nfield.strings import LazyI18nString
-from pretix.base.models import Event
+from pretix.base.logentrytypes import OrderLogEntryType, log_entry_types
+from pretix.base.models import Event, Order
 from pretix.base.settings import settings_hierarkey
+from pretix.base.signals import (
+    order_approved,
+    order_canceled,
+    order_denied,
+    order_paid,
+    order_placed,
+    periodic_task,
+)
 from pretix.control.signals import nav_event_settings
+
+from . import services
 
 logger = logging.getLogger(__name__)
 
@@ -92,3 +103,71 @@ def navbar_settings(sender: Event, request, **kwargs):
             and url.url_name == "control.vetting.settings",
         }
     ]
+
+
+@receiver(order_placed, dispatch_uid="pretix_vetting_order_placed")
+def on_order_placed(sender: Event, order: Order, **kwargs):
+    data = (order.meta_info_data or {}).get("vetting") or {}
+    services.start_application(order, data)
+
+
+@receiver(order_approved, dispatch_uid="pretix_vetting_order_approved")
+def on_order_approved(sender: Event, order: Order, **kwargs):
+    services.issue_invites(order)
+
+
+@receiver(order_paid, dispatch_uid="pretix_vetting_order_paid")
+def on_order_paid(sender: Event, order: Order, **kwargs):
+    services.issue_invites(order)
+
+
+@receiver(order_canceled, dispatch_uid="pretix_vetting_order_canceled")
+def on_order_canceled(sender: Event, order: Order, **kwargs):
+    services.remove_unused_invites(order)
+
+
+@receiver(order_denied, dispatch_uid="pretix_vetting_order_denied")
+def on_order_denied(sender: Event, order: Order, **kwargs):
+    services.remove_unused_invites(order)
+
+
+@receiver(periodic_task, dispatch_uid="pretix_vetting_periodic_task")
+def on_periodic_task(sender, **kwargs):
+    services.process_open_vouches()
+
+
+@log_entry_types.new_from_dict(
+    {
+        "pretix_vetting.vouch.requested": _("A vouch was requested from {email}."),
+        "pretix_vetting.vouch.reminded": _(
+            "A reminder for a vouch request was sent to {email}."
+        ),
+        "pretix_vetting.vouch.answered": _(
+            "Someone answered a vouch request ({state})."
+        ),
+        "pretix_vetting.vouch.expired": _(
+            "The vouch request to {email} expired without an answer."
+        ),
+        "pretix_vetting.invite.used": _("The invite code {code} was used."),
+        "pretix_vetting.invite.invalid": _(
+            "The invite code {code} could not be used, it was already used or doesn't exist."
+        ),
+        "pretix_vetting.application.flagged": _(
+            "The application was flagged for review ({reason})."
+        ),
+        "pretix_vetting.application.ready": _(
+            "Enough people vouched for this application ({yes})."
+        ),
+        "pretix_vetting.application.approved": _(
+            "The order was approved because enough people vouched ({yes})."
+        ),
+        "pretix_vetting.application.denied": _(
+            "The order was denied because people didn't vouch ({no})."
+        ),
+        "pretix_vetting.application.decision_failed": _(
+            "The vouches could not be applied to the order: {error}"
+        ),
+    }
+)
+class VettingOrderLogEntryType(OrderLogEntryType):
+    pass

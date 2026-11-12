@@ -1,14 +1,19 @@
 import pytest
-import string
 from datetime import timedelta
 from decimal import Decimal
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-from pretix.base.models import Event, Item, Order, OrderPosition, Organizer, Team, User
+from pretix.base.models import Event, Order, Organizer, Team, User
+
+
+@pytest.fixture(autouse=True)
+def no_scopes():
+    with scopes_disabled():
+        yield
 
 
 @pytest.fixture
-def organizer():
+def organizer(db):
     return Organizer.objects.create(name="Dummy", slug="dummy")
 
 
@@ -18,58 +23,88 @@ def event(organizer):
         organizer=organizer,
         name="Dummy",
         slug="dummy",
-        date_from=now(),
+        date_from=now() + timedelta(days=30),
+        plugins="pretix_vetting",
+        live=True,
+    )
+
+
+@pytest.fixture
+def past_event(organizer):
+    return Event.objects.create(
+        organizer=organizer,
+        name="Last year",
+        slug="lastyear",
+        date_from=now() - timedelta(days=365),
         plugins="pretix_vetting",
     )
 
 
 @pytest.fixture
 def item(event):
-    return Item.objects.create(
-        event=event, name="Ticket", default_price=Decimal("23.00")
+    return event.items.create(
+        name="Ticket",
+        default_price=Decimal("23.00"),
+        admission=True,
+        require_approval=True,
     )
 
 
 @pytest.fixture
 def other_item(event):
-    return Item.objects.create(
-        event=event, name="T-Shirt", default_price=Decimal("10.00")
-    )
+    return event.items.create(name="T-Shirt", default_price=Decimal("10.00"))
+
+
+@pytest.fixture
+def vetting(event, item):
+    event.settings.vetting__products = [str(item.pk)]
+    event.settings.vetting__methods = ["references", "invites"]
+    event.settings.vetting__threshold = 2
+    event.settings.vetting__outcome = "auto"
+    return event
 
 
 @pytest.fixture
 def make_order():
-    codes = iter(string.ascii_uppercase)
-
-    def make(*items):
-        event = items[0].event
-        code = "ORDER" + next(codes)
-        with scopes_disabled():
-            order = Order.objects.create(
-                code=code,
-                event=event,
-                email="dummy@dummy.test",
-                status=Order.STATUS_PENDING,
-                datetime=now(),
-                expires=now() + timedelta(days=10),
-                total=sum(i.default_price for i in items),
-                sales_channel=event.organizer.sales_channels.get(identifier="web"),
-            )
-            # The order search also matches the start of secret and pseudonymization_id.
-            # Both are random by default, so fix them to values without digits.
-            for n, i in enumerate(items):
-                suffix = code + string.ascii_uppercase[n]
-                OrderPosition.objects.create(
-                    order=order,
-                    item=i,
-                    variation=None,
-                    price=i.default_price,
-                    secret="SECRET" + suffix,
-                    pseudonymization_id="PSEUDO" + suffix,
-                )
+    def make(
+        item,
+        email="applicant@example.com",
+        status=Order.STATUS_PENDING,
+        require_approval=False,
+        attendee_email=None,
+        attendee_name=None,
+    ):
+        event = item.event
+        order = Order.objects.create(
+            event=event,
+            email=email,
+            status=status,
+            require_approval=require_approval,
+            datetime=now(),
+            expires=now() + timedelta(days=10),
+            total=item.default_price,
+            locale="en",
+            sales_channel=event.organizer.sales_channels.get(identifier="web"),
+        )
+        order.positions.create(
+            item=item,
+            price=item.default_price,
+            attendee_email=attendee_email,
+            attendee_name_parts=({"_legacy": attendee_name} if attendee_name else {}),
+        )
         return order
 
     return make
+
+
+@pytest.fixture
+def attendee(make_order, item):
+    return make_order(item, email="friend@example.com", status=Order.STATUS_PAID)
+
+
+@pytest.fixture
+def applicant(make_order, item):
+    return make_order(item, require_approval=True)
 
 
 @pytest.fixture
@@ -81,11 +116,3 @@ def admin_client(client, organizer, event):
     team.members.add(user)
     client.login(email="dummy@dummy.dummy", password="dummy")
     return client
-
-
-@pytest.fixture(autouse=True)
-def no_scopes():
-    # pretix activates the organizer scope before plugin signals fire. Outside
-    # of a request we have no scope, so disable scoping for the tests.
-    with scopes_disabled():
-        yield

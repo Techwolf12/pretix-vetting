@@ -32,17 +32,17 @@ def test_defaults(event):
 
 
 @pytest.mark.django_db
-def test_product_must_require_approval(event, item):
+def test_product_must_require_approval(event, other_item):
     form = VettingSettingsForm(
-        obj=event, data=form_data(event, vetting__products=[str(item.pk)])
+        obj=event, data=form_data(event, vetting__products=[str(other_item.pk)])
     )
     assert not form.is_valid()
     assert "vetting__products" in form.errors
 
-    item.require_approval = True
-    item.save()
+    other_item.require_approval = True
+    other_item.save()
     form = VettingSettingsForm(
-        obj=event, data=form_data(event, vetting__products=[str(item.pk)])
+        obj=event, data=form_data(event, vetting__products=[str(other_item.pk)])
     )
     assert form.is_valid(), form.errors
 
