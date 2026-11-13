@@ -1,11 +1,19 @@
 from django import forms
+from django.contrib import messages
 from django.forms.widgets import CheckboxSelectMultiple
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import TemplateView
 from i18nfield.forms import I18nFormField, I18nTextInput
 from pretix.base.forms import I18nMarkdownTextarea, SettingsForm
 from pretix.base.models import Event
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
+from pretix.presale.views import EventViewMixin
+
+from . import services
+from .models import Vouch
 
 PLACEHOLDER_HELP = _(
     "Available placeholders: {applicant}, {event}, {url} (the page where they answer) "
@@ -203,3 +211,74 @@ class SettingsView(EventSettingsViewMixin, EventSettingsFormView):
                 "event": self.request.event.slug,
             },
         )
+
+
+class VouchForm(forms.Form):
+    answer = forms.ChoiceField(
+        choices=[
+            (Vouch.STATE_YES, _("I vouch for them")),
+            (Vouch.STATE_NO, _("I don't vouch for them")),
+            (Vouch.STATE_UNKNOWN, _("I don't know them")),
+        ],
+        widget=forms.HiddenInput,
+    )
+    comment = forms.CharField(
+        label=_("Comment for the organizers"),
+        help_text=_("Optional. Only the organizers see this, not the applicant."),
+        required=False,
+        max_length=2000,
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
+
+
+class VouchView(EventViewMixin, TemplateView):
+    template_name = "pretix_vetting/vouch.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.vouch = get_object_or_404(
+            Vouch.objects.select_related("order"),
+            token=kwargs["token"],
+            order__event=request.event,
+            method=Vouch.METHOD_REFERENCE,
+        )
+        return super().dispatch(request, *args, **kwargs)
+
+    @property
+    def status(self):
+        if self.vouch.state in (Vouch.STATE_EXPIRED,) or (
+            self.vouch.state == Vouch.STATE_PENDING
+            and now() > services.vouch_deadline(self.vouch)
+        ):
+            return "expired"
+        if self.vouch.state != Vouch.STATE_PENDING:
+            return "answered"
+        if not services.is_pending_approval(self.vouch.order):
+            return "closed"
+        return "open"
+
+    def post(self, request, *args, **kwargs):
+        form = VouchForm(data=request.POST)
+        if self.status != "open" or not form.is_valid():
+            return redirect(request.path)
+        if services.record_answer(
+            self.vouch,
+            form.cleaned_data["answer"],
+            form.cleaned_data["comment"],
+        ):
+            messages.success(request, _("Thank you, we've recorded your answer."))
+        return redirect(request.path)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        order = self.vouch.order
+        application = getattr(order, "vetting_application", None)
+        ctx.update(
+            vouch=self.vouch,
+            status=self.status,
+            applicant=services.applicant_name(order),
+            motivation=application.motivation if application else "",
+            deadline=services.vouch_deadline(self.vouch),
+            form=VouchForm(),
+            answers=VouchForm.base_fields["answer"].choices,
+        )
+        return ctx

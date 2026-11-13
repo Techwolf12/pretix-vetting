@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import SettingsView
+from .views import SettingsView, VouchView
 
 urlpatterns = [
     path(
@@ -8,4 +8,8 @@ urlpatterns = [
         SettingsView.as_view(),
         name="control.vetting.settings",
     ),
+]
+
+event_patterns = [
+    path("vouch/<str:token>/", VouchView.as_view(), name="vouch"),
 ]

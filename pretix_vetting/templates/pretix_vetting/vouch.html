@@ -1,0 +1,54 @@
+{% extends "pretixpresale/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Vouch for an applicant" %}{% endblock %}
+{% block content %}
+    <h2>{% blocktrans trimmed %}Do you know {{ applicant }}?{% endblocktrans %}</h2>
+    {% if status == "answered" %}
+        <div class="alert alert-info">
+            {% trans "You already answered this request. Thank you!" %}
+        </div>
+    {% elif status == "expired" %}
+        <div class="alert alert-warning">
+            {% trans "This request has expired. If you still want to vouch for them, please contact the organizers." %}
+        </div>
+    {% elif status == "closed" %}
+        <div class="alert alert-info">
+            {% trans "This application has already been decided. There is nothing left to do." %}
+        </div>
+    {% else %}
+        <p>
+            {% blocktrans trimmed with event=request.event.name %}
+                <strong>{{ applicant }}</strong> would like to attend {{ event }} and named you as someone who can vouch
+                for them. Only the organizers will see your answer.
+            {% endblocktrans %}
+        </p>
+        {% if motivation %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{% trans "Why they want to join" %}</h3>
+                </div>
+                <div class="panel-body">{{ motivation|linebreaks }}</div>
+            </div>
+        {% endif %}
+        <p class="text-muted">
+            {% blocktrans trimmed with date=deadline|date:"SHORT_DATE_FORMAT" %}
+                Please answer by {{ date }}.
+            {% endblocktrans %}
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            {% bootstrap_field form.comment layout="vertical" %}
+            <div class="row">
+                {% for value, label in answers %}
+                    <div class="col-md-4">
+                        <button type="submit" name="answer" value="{{ value }}"
+                                class="btn btn-block btn-lg {% if value == "yes" %}btn-primary{% else %}btn-default{% endif %}">
+                            {{ label }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
