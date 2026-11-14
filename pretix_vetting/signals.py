@@ -16,15 +16,18 @@ from pretix.base.signals import (
     periodic_task,
 )
 from pretix.control.signals import nav_event_settings
+from pretix.multidomain.urlreverse import eventreverse_absolute
 from pretix.presale.signals import (
     checkout_confirm_page_content,
     checkout_flow_steps,
+    order_info,
     order_meta_from_request,
 )
 from pretix.presale.views.cart import cart_session
 
 from . import services
 from .checkoutflow import VettingStep, cart_needs_vetting
+from .models import Vouch
 
 logger = logging.getLogger(__name__)
 
@@ -201,3 +204,20 @@ def on_checkout_confirm_page_content(sender: Event, request, **kwargs):
         return ""
     template = get_template("pretix_vetting/checkout_confirm.html")
     return template.render({"data": data, "request": request}, request=request)
+
+
+@receiver(order_info, dispatch_uid="pretix_vetting_order_info")
+def on_order_info(sender: Event, order: Order, request=None, **kwargs):
+    pending = services.is_pending_approval(order) and order.vetting_vouches.exists()
+    invites = list(order.vetting_invites.all())
+    if not pending and not invites:
+        return ""
+    template = get_template("pretix_vetting/order_info.html")
+    ctx = {
+        "pending": pending,
+        "received": order.vetting_vouches.filter(state=Vouch.STATE_YES).count(),
+        "threshold": sender.settings.vetting__threshold,
+        "invites": invites,
+        "event_url": eventreverse_absolute(sender, "presale:event.index"),
+    }
+    return template.render(ctx, request=request)

@@ -1,0 +1,44 @@
+{% load i18n %}
+{% if pending %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Your application" %}</h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% blocktrans trimmed count needed=threshold %}
+                    Your application is being reviewed. {{ received }} of {{ needed }} vouch received.
+                {% plural %}
+                    Your application is being reviewed. {{ received }} of {{ needed }} vouches received.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+{% endif %}
+{% if invites %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Your invite codes" %}</h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% blocktrans trimmed %}
+                    You can invite people you know with these codes. They enter the code when they order their ticket at
+                    <a href="{{ event_url }}">{{ event_url }}</a>. Each code can be used once.
+                {% endblocktrans %}
+            </p>
+            <ul class="list-unstyled">
+                {% for invite in invites %}
+                    <li>
+                        {% if invite.is_used %}
+                            <del><code>{{ invite.code }}</code></del>
+                            <span class="text-muted">{% trans "used" %}</span>
+                        {% else %}
+                            <code>{{ invite.code }}</code>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
