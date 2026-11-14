@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load eventurl %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="pull-right">
+            <a href="{% eventurl request.event "presale:event.checkout" step="vetting" cart_namespace=cart_namespace|default_if_none:"" %}">
+                <span class="fa fa-edit"></span>
+                {% trans "Modify" %}
+            </a>
+        </div>
+        <h3 class="panel-title">{% trans "References" %}</h3>
+    </div>
+    <div class="panel-body">
+        {% if data.invite %}
+            <p>{% blocktrans trimmed with code=data.invite %}You're using the invite code <strong>{{ code }}</strong>.{% endblocktrans %}</p>
+        {% endif %}
+        {% if data.references %}
+            <p>{% trans "We'll ask these people to vouch for you:" %}</p>
+            <ul>
+                {% for email in data.references %}
+                    <li>{{ email }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p class="text-muted">
+            {% trans "Your order needs to be approved before it is confirmed." %}
+        </p>
+    </div>
+</div>

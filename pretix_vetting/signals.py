@@ -1,5 +1,6 @@
 import logging
 from django.dispatch import receiver
+from django.template.loader import get_template
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _, gettext_noop
 from i18nfield.strings import LazyI18nString
@@ -15,8 +16,15 @@ from pretix.base.signals import (
     periodic_task,
 )
 from pretix.control.signals import nav_event_settings
+from pretix.presale.signals import (
+    checkout_confirm_page_content,
+    checkout_flow_steps,
+    order_meta_from_request,
+)
+from pretix.presale.views.cart import cart_session
 
 from . import services
+from .checkoutflow import VettingStep, cart_needs_vetting
 
 logger = logging.getLogger(__name__)
 
@@ -171,3 +179,25 @@ def on_periodic_task(sender, **kwargs):
 )
 class VettingOrderLogEntryType(OrderLogEntryType):
     pass
+
+
+@receiver(checkout_flow_steps, dispatch_uid="pretix_vetting_checkout_flow_steps")
+def on_checkout_flow_steps(sender, **kwargs):
+    return VettingStep
+
+
+@receiver(order_meta_from_request, dispatch_uid="pretix_vetting_order_meta")
+def on_order_meta_from_request(sender: Event, request, **kwargs):
+    data = cart_session(request).get("vetting")
+    if not data or not cart_needs_vetting(request):
+        return {}
+    return {"vetting": data}
+
+
+@receiver(checkout_confirm_page_content, dispatch_uid="pretix_vetting_confirm")
+def on_checkout_confirm_page_content(sender: Event, request, **kwargs):
+    data = cart_session(request).get("vetting")
+    if not data or not cart_needs_vetting(request):
+        return ""
+    template = get_template("pretix_vetting/checkout_confirm.html")
+    return template.render({"data": data, "request": request}, request=request)

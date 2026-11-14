@@ -1,0 +1,54 @@
+{% extends "pretixpresale/event/checkout_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block inner %}
+    <p>
+        {% blocktrans trimmed %}
+            This event is only open to people that existing attendees can vouch for. Your order will be confirmed once
+            enough of them have done so.
+        {% endblocktrans %}
+    </p>
+    <form method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form type="non_fields" %}
+        {% if form.invite %}
+            <fieldset>
+                <legend>{% trans "Invite" %}</legend>
+                {% bootstrap_field form.invite layout="checkout" %}
+            </fieldset>
+        {% endif %}
+        {% if form.reference_fields %}
+            <fieldset>
+                <legend>{% trans "People who can vouch for you" %}</legend>
+                <p>
+                    {% blocktrans trimmed %}
+                        Enter the email addresses of people attending this event who know you. We'll ask them by email
+                        whether they vouch for you.
+                    {% endblocktrans %}
+                </p>
+                {% for field in form.reference_fields %}
+                    {% bootstrap_field field layout="checkout" %}
+                {% endfor %}
+            </fieldset>
+        {% endif %}
+        {% if form.motivation %}
+            <fieldset>
+                <legend>{% trans "About you" %}</legend>
+                {% bootstrap_field form.motivation layout="checkout" %}
+            </fieldset>
+        {% endif %}
+        <div class="row checkout-button-row">
+            <div class="col-md-4">
+                <a class="btn btn-block btn-default btn-lg" href="{{ prev_url }}">
+                    {% trans "Go back" %}
+                </a>
+            </div>
+            <div class="col-md-4 col-md-offset-4">
+                <button class="btn btn-block btn-primary btn-lg" type="submit">
+                    {% trans "Continue" %}
+                </button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </form>
+{% endblock %}
