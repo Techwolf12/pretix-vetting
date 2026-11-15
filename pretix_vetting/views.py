@@ -1,19 +1,22 @@
 from django import forms
 from django.contrib import messages
+from django.db.models import Count, Q
 from django.forms.widgets import CheckboxSelectMultiple
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import TemplateView
+from django.views import View
+from django.views.generic import ListView, TemplateView
 from i18nfield.forms import I18nFormField, I18nTextInput
 from pretix.base.forms import I18nMarkdownTextarea, SettingsForm
-from pretix.base.models import Event
+from pretix.base.models import Event, Order
+from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from pretix.presale.views import EventViewMixin
 
 from . import services
-from .models import Vouch
+from .models import VettingApplication, Vouch
 
 PLACEHOLDER_HELP = _(
     "Available placeholders: {applicant}, {event}, {url} (the page where they answer) "
@@ -282,3 +285,77 @@ class VouchView(EventViewMixin, TemplateView):
             answers=VouchForm.base_fields["answer"].choices,
         )
         return ctx
+
+
+class VettingListView(EventPermissionRequiredMixin, ListView):
+    permission = "event.orders:read"
+    template_name = "pretix_vetting/control_list.html"
+    context_object_name = "applications"
+    paginate_by = 50
+
+    def get_queryset(self):
+        qs = (
+            VettingApplication.objects.filter(
+                order__event=self.request.event,
+                order__status=Order.STATUS_PENDING,
+                order__require_approval=True,
+            )
+            .select_related("order")
+            .annotate(
+                yes=Count(
+                    "order__vetting_vouches",
+                    filter=Q(order__vetting_vouches__state=Vouch.STATE_YES),
+                ),
+                no=Count(
+                    "order__vetting_vouches",
+                    filter=Q(order__vetting_vouches__state=Vouch.STATE_NO),
+                ),
+                pending=Count(
+                    "order__vetting_vouches",
+                    filter=Q(order__vetting_vouches__state=Vouch.STATE_PENDING),
+                ),
+            )
+            .order_by("-flagged", "order__datetime")
+        )
+        status = self.request.GET.get("status")
+        if status == "flagged":
+            qs = qs.filter(flagged=True)
+        elif status == "ready":
+            qs = qs.filter(
+                yes__gte=self.request.event.settings.vetting__threshold, no=0
+            )
+        elif status == "waiting":
+            qs = qs.filter(pending__gt=0)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["status"] = self.request.GET.get("status", "")
+        ctx["filters"] = [
+            ("", _("All")),
+            ("flagged", _("Needs review")),
+            ("ready", _("Ready")),
+            ("waiting", _("Waiting for answers")),
+        ]
+        ctx["threshold"] = self.request.event.settings.vetting__threshold
+        return ctx
+
+
+class ResendVouchView(EventPermissionRequiredMixin, View):
+    permission = "event.orders:write"
+
+    def post(self, request, *args, **kwargs):
+        vouch = get_object_or_404(
+            Vouch,
+            pk=kwargs["pk"],
+            order__event=request.event,
+            state=Vouch.STATE_PENDING,
+        )
+        services.send_vouch_mail(vouch)
+        messages.success(request, _("The request has been sent again."))
+        return redirect(
+            "control:event.order",
+            organizer=request.organizer.slug,
+            event=request.event.slug,
+            code=vouch.order.code,
+        )

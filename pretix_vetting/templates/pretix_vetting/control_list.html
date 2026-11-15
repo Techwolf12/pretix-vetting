@@ -1,0 +1,59 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Vetting" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Vetting" %}</h1>
+    <p>{% trans "Orders that are waiting for approval and their vouches. Flagged applications are listed first." %}</p>
+    <ul class="nav nav-pills">
+        {% for value, label in filters %}
+            <li{% if status == value %} class="active"{% endif %}>
+                <a href="?status={{ value }}">{{ label }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if applications %}
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "Order" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Order date" %}</th>
+                    <th>{% trans "Vouches" %}</th>
+                    <th>{% trans "Negative" %}</th>
+                    <th>{% trans "Waiting" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for a in applications %}
+                    <tr>
+                        <td>
+                            <strong>
+                                <a href="{% url "control:event.order" organizer=request.event.organizer.slug event=request.event.slug code=a.order.code %}">{{ a.order.code }}</a>
+                            </strong>
+                        </td>
+                        <td>{{ a.order.email }}</td>
+                        <td>{{ a.order.datetime|date:"SHORT_DATETIME_FORMAT" }}</td>
+                        <td>{{ a.yes }} / {{ threshold }}</td>
+                        <td>{{ a.no }}</td>
+                        <td>{{ a.pending }}</td>
+                        <td class="text-right">
+                            {% if a.flagged %}
+                                <span class="label label-danger">{% trans "Needs review" %}</span>
+                            {% elif a.yes >= threshold and not a.no %}
+                                <span class="label label-success">{% trans "Ready" %}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pretixcontrol/pagination.html" %}
+    {% else %}
+        <div class="empty-collection">
+            <p>{% trans "No applications match." %}</p>
+        </div>
+    {% endif %}
+{% endblock %}

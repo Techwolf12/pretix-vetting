@@ -2,6 +2,7 @@ import logging
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.urls import resolve, reverse
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _, gettext_noop
 from i18nfield.strings import LazyI18nString
 from pretix.base.logentrytypes import OrderLogEntryType, log_entry_types
@@ -15,7 +16,12 @@ from pretix.base.signals import (
     order_placed,
     periodic_task,
 )
-from pretix.control.signals import nav_event_settings
+from pretix.control.signals import (
+    nav_event,
+    nav_event_settings,
+    order_approve_info,
+    order_info as control_order_info,
+)
 from pretix.multidomain.urlreverse import eventreverse_absolute
 from pretix.presale.signals import (
     checkout_confirm_page_content,
@@ -27,7 +33,7 @@ from pretix.presale.views.cart import cart_session
 
 from . import services
 from .checkoutflow import VettingStep, cart_needs_vetting
-from .models import Vouch
+from .models import VettingApplication, Vouch
 
 logger = logging.getLogger(__name__)
 
@@ -221,3 +227,65 @@ def on_order_info(sender: Event, order: Order, request=None, **kwargs):
         "event_url": eventreverse_absolute(sender, "presale:event.index"),
     }
     return template.render(ctx, request=request)
+
+
+@receiver(control_order_info, dispatch_uid="pretix_vetting_control_order_info")
+def on_control_order_info(sender: Event, request, order: Order, **kwargs):
+    application = VettingApplication.objects.filter(order=order).first()
+    vouches = list(
+        order.vetting_vouches.select_related("voucher_order__event__organizer")
+    )
+    if not application and not vouches:
+        return ""
+    template = get_template("pretix_vetting/control_order_info.html")
+    ctx = {
+        "order": order,
+        "application": application,
+        "vouches": vouches,
+        "counts": services.vouch_counts(order),
+        "threshold": sender.settings.vetting__threshold,
+        "can_write": request.user.has_event_permission(
+            request.organizer, sender, "event.orders:write", request=request
+        ),
+    }
+    return template.render(ctx, request=request)
+
+
+@receiver(order_approve_info, dispatch_uid="pretix_vetting_order_approve_info")
+def on_order_approve_info(sender: Event, request, order: Order, **kwargs):
+    if not order.vetting_vouches.exists():
+        return ""
+    counts = services.vouch_counts(order)
+    return format_html(
+        '<div class="alert alert-info">{}</div>',
+        _("{yes}/{threshold} vouches, {no} negative, {pending} waiting.").format(
+            yes=counts[Vouch.STATE_YES],
+            threshold=sender.settings.vetting__threshold,
+            no=counts[Vouch.STATE_NO],
+            pending=counts[Vouch.STATE_PENDING],
+        ),
+    )
+
+
+@receiver(nav_event, dispatch_uid="pretix_vetting_nav_event")
+def on_nav_event(sender: Event, request, **kwargs):
+    if not request.user.has_event_permission(
+        request.organizer, request.event, "event.orders:read", request=request
+    ):
+        return []
+    url = resolve(request.path_info)
+    return [
+        {
+            "label": _("Vetting"),
+            "url": reverse(
+                "plugins:pretix_vetting:control.vetting.list",
+                kwargs={
+                    "event": request.event.slug,
+                    "organizer": request.organizer.slug,
+                },
+            ),
+            "active": url.namespace == "plugins:pretix_vetting"
+            and url.url_name == "control.vetting.list",
+            "icon": "user-plus",
+        }
+    ]
