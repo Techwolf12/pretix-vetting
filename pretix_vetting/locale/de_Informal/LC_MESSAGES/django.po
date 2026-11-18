@@ -1,22 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-17 19:58+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2026-11-18 20:40+0100\n"
+"Last-Translator: Christiaan de Die le Clercq (techwolf12)\n"
+"Language-Team: German (informal)\n"
+"Language: de_Informal\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: pretix_vetting/apps.py:17 pretix_vetting/apps.py:28
 #: pretix_vetting/signals.py:111 pretix_vetting/signals.py:279
@@ -24,127 +18,137 @@ msgstr ""
 #: pretix_vetting/templates/pretix_vetting/control_list.html:5
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:5
 msgid "Vetting"
-msgstr ""
+msgstr "Bürgschaften"
 
 #: pretix_vetting/apps.py:20
 msgid ""
 "Approve orders for selected products only when existing attendees vouch for "
 "the applicant"
 msgstr ""
+"Bestellungen für ausgewählte Produkte nur freigeben, wenn bisherige "
+"Teilnehmende für die bewerbende Person bürgen"
 
 #: pretix_vetting/apps.py:28
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #: pretix_vetting/checkoutflow.py:24
 msgctxt "checkoutflow"
 msgid "References"
-msgstr ""
+msgstr "Referenzen"
 
 #: pretix_vetting/checkoutflow.py:50
 msgid "We couldn't handle your input, please check below for errors."
 msgstr ""
+"Wir konnten deine Eingabe nicht verarbeiten. Bitte prüfe die Fehler "
+"unten."
 
 #: pretix_vetting/checkoutflow.py:65
 msgid "Please check the people you named who can vouch for you."
-msgstr ""
+msgstr "Bitte prüfe die angegebenen Personen, die für dich bürgen sollen."
 
 #: pretix_vetting/forms.py:20
 msgid "Invite code"
-msgstr ""
+msgstr "Einladungscode"
 
 #: pretix_vetting/forms.py:23
 msgid "If an attendee gave you an invite code, enter it here."
 msgstr ""
+"Falls dir jemand aus dem Teilnehmerkreis einen Einladungscode gegeben hat, "
+"gib ihn hier ein."
 
 #: pretix_vetting/forms.py:28
 #, python-brace-format
 msgid "Reference {number}"
-msgstr ""
+msgstr "Referenz {number}"
 
 #: pretix_vetting/forms.py:32
 msgid ""
 "The email address someone attending used for their ticket. We'll ask them to "
 "vouch for you."
 msgstr ""
+"Die E-Mail-Adresse, die eine teilnehmende Person für ihr Ticket verwendet "
+"hat. Wir bitten diese Person, für dich zu bürgen."
 
 #: pretix_vetting/forms.py:41
 msgid "Why would you like to join?"
-msgstr ""
+msgstr "Warum möchtest du teilnehmen?"
 
 #: pretix_vetting/forms.py:45
 msgid "The people you name will see this."
-msgstr ""
+msgstr "Die von dir angegebenen Personen sehen diesen Text."
 
 #: pretix_vetting/forms.py:59
 msgid "This invite code is not valid."
-msgstr ""
+msgstr "Dieser Einladungscode ist ungültig."
 
 #: pretix_vetting/forms.py:73
 msgid "Please name someone other than yourself."
-msgstr ""
+msgstr "Bitte gib eine andere Person als dich selbst an."
 
 #: pretix_vetting/forms.py:75
 msgid "You already entered this address."
-msgstr ""
+msgstr "Du hast diese Adresse bereits eingegeben."
 
 #: pretix_vetting/forms.py:88
 #, python-format
 msgid "Please name at least %(num)d person who can vouch for you."
 msgid_plural "Please name at least %(num)d people who can vouch for you."
 msgstr[0] ""
+"Bitte gib mindestens %(num)d Person an, die für dich bürgen kann."
 msgstr[1] ""
+"Bitte gib mindestens %(num)d Personen an, die für dich bürgen können."
 
 #: pretix_vetting/forms.py:94
 msgid "Alternatively, enter an invite code."
-msgstr ""
+msgstr "Alternativ kannst du einen Einladungscode eingeben."
 
 #: pretix_vetting/forms.py:100
 msgid "Please enter your invite code."
-msgstr ""
+msgstr "Bitte gib deinen Einladungscode ein."
 
 #: pretix_vetting/models.py:33
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:28
 msgid "Reference"
-msgstr ""
+msgstr "Referenz"
 
 #: pretix_vetting/models.py:34
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:16
 msgid "Invite"
-msgstr ""
+msgstr "Einladung"
 
 #: pretix_vetting/models.py:44
 msgid "No matching attendee"
-msgstr ""
+msgstr "Keine passende teilnehmende Person"
 
 #: pretix_vetting/models.py:45
 msgid "Waiting for answer"
-msgstr ""
+msgstr "Wartet auf Antwort"
 
 #: pretix_vetting/models.py:46
 msgid "Vouched"
-msgstr ""
+msgstr "Gebürgt"
 
 #: pretix_vetting/models.py:47
 msgid "Declined"
-msgstr ""
+msgstr "Abgelehnt"
 
 #: pretix_vetting/models.py:48
 msgid "Doesn't know them"
-msgstr ""
+msgstr "Kennt die Person nicht"
 
 #: pretix_vetting/models.py:49
 msgid "Expired"
-msgstr ""
+msgstr "Abgelaufen"
 
 #: pretix_vetting/services.py:254
 msgid "Unfortunately, we could not confirm your application."
-msgstr ""
+msgstr "Leider konnten wir deine Bewerbung nicht bestätigen."
 
 #: pretix_vetting/signals.py:58
 #, python-brace-format
 msgid "Do you know {applicant}?"
-msgstr ""
+msgstr "Kennst du {applicant}?"
 
 #: pretix_vetting/signals.py:65
 #, python-brace-format
@@ -163,11 +167,25 @@ msgid ""
 "Best regards,\n"
 "Your {event} team"
 msgstr ""
+"Hallo,\n"
+"\n"
+"{applicant} möchte an {event} teilnehmen und hat dich als Person angegeben, "
+"die für sie oder ihn bürgen kann.\n"
+"\n"
+"Bitte teile uns bis {deadline} mit, ob du für diese Person bürgst:\n"
+"\n"
+"{url}\n"
+"\n"
+"Falls du diese Person nicht kennst, kannst du das auf derselben Seite "
+"angeben.\n"
+"\n"
+"Viele Grüße\n"
+"Dein {event}-Team"
 
 #: pretix_vetting/signals.py:79
 #, python-brace-format
 msgid "Reminder: do you know {applicant}?"
-msgstr ""
+msgstr "Erinnerung: Kennst du {applicant}?"
 
 #: pretix_vetting/signals.py:86
 #, python-brace-format
@@ -182,31 +200,41 @@ msgid ""
 "Best regards,\n"
 "Your {event} team"
 msgstr ""
+"Hallo,\n"
+"\n"
+"vor einigen Tagen haben wir dich gefragt, ob du für {applicant} bürgst. "
+"Diese Person möchte an {event} teilnehmen. Wir haben noch keine Antwort von "
+"dir erhalten. Bitte antworte bis {deadline}:\n"
+"\n"
+"{url}\n"
+"\n"
+"Viele Grüße\n"
+"Dein {event}-Team"
 
 #: pretix_vetting/signals.py:158
 #, python-brace-format
 msgid "A vouch was requested from {email}."
-msgstr ""
+msgstr "Bei {email} wurde eine Bürgschaft angefragt."
 
 #: pretix_vetting/signals.py:160
 #, python-brace-format
 msgid "A reminder for a vouch request was sent to {email}."
-msgstr ""
+msgstr "Eine Erinnerung an die Bürgschaftsanfrage wurde an {email} gesendet."
 
 #: pretix_vetting/signals.py:163
 #, python-brace-format
 msgid "Someone answered a vouch request ({state})."
-msgstr ""
+msgstr "Eine Bürgschaftsanfrage wurde beantwortet ({state})."
 
 #: pretix_vetting/signals.py:166
 #, python-brace-format
 msgid "The vouch request to {email} expired without an answer."
-msgstr ""
+msgstr "Die Bürgschaftsanfrage an {email} ist ohne Antwort abgelaufen."
 
 #: pretix_vetting/signals.py:168
 #, python-brace-format
 msgid "The invite code {code} was used."
-msgstr ""
+msgstr "Der Einladungscode {code} wurde verwendet."
 
 #: pretix_vetting/signals.py:170
 #, python-brace-format
@@ -214,132 +242,144 @@ msgid ""
 "The invite code {code} could not be used, it was already used or doesn't "
 "exist."
 msgstr ""
+"Der Einladungscode {code} konnte nicht verwendet werden, da er bereits "
+"verwendet wurde oder nicht existiert."
 
 #: pretix_vetting/signals.py:173
 #, python-brace-format
 msgid "The application was flagged for review ({reason})."
-msgstr ""
+msgstr "Die Bewerbung wurde zur Prüfung markiert ({reason})."
 
 #: pretix_vetting/signals.py:176
 #, python-brace-format
 msgid "Enough people vouched for this application ({yes})."
-msgstr ""
+msgstr "Für diese Bewerbung haben genügend Personen gebürgt ({yes})."
 
 #: pretix_vetting/signals.py:179
 #, python-brace-format
 msgid "The order was approved because enough people vouched ({yes})."
 msgstr ""
+"Die Bestellung wurde freigegeben, da genügend Personen gebürgt haben ({yes})."
 
 #: pretix_vetting/signals.py:182
 #, python-brace-format
 msgid "The order was denied because people didn't vouch ({no})."
 msgstr ""
+"Die Bestellung wurde abgelehnt, da Personen nicht gebürgt haben ({no})."
 
 #: pretix_vetting/signals.py:185
 #, python-brace-format
 msgid "The vouches could not be applied to the order: {error}"
 msgstr ""
+"Die Bürgschaften konnten nicht auf die Bestellung angewendet werden: {error}"
 
 #: pretix_vetting/signals.py:261
 #, python-brace-format
 msgid "{yes}/{threshold} vouches, {no} negative, {pending} waiting."
-msgstr ""
+msgstr "{yes}/{threshold} Bürgschaften, {no} negativ, {pending} ausstehend."
 
 #: pretix_vetting/templates/pretix_vetting/checkout_confirm.html:8
 msgid "Modify"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_confirm.html:11
 #: pretix_vetting/templates/pretix_vetting/settings.html:37
 msgid "References"
-msgstr ""
+msgstr "Referenzen"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_confirm.html:15
 #, python-format
 msgid "You're using the invite code <strong>%(code)s</strong>."
-msgstr ""
+msgstr "Du verwendest den Einladungscode <strong>%(code)s</strong>."
 
 #: pretix_vetting/templates/pretix_vetting/checkout_confirm.html:18
 msgid "We'll ask these people to vouch for you:"
-msgstr ""
+msgstr "Wir bitten diese Personen, für dich zu bürgen:"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_confirm.html:26
 msgid "Your order needs to be approved before it is confirmed."
-msgstr ""
+msgstr "Deine Bestellung muss freigegeben werden, bevor sie bestätigt wird."
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:6
 msgid ""
 "This event is only open to people that existing attendees can vouch for. "
 "Your order will be confirmed once enough of them have done so."
 msgstr ""
+"Diese Veranstaltung steht nur Personen offen, für die bisherige "
+"Teilnehmende bürgen. Deine Bestellung wird bestätigt, sobald genügend von "
+"ihnen für dich gebürgt haben."
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:22
 msgid "People who can vouch for you"
-msgstr ""
+msgstr "Personen, die für dich bürgen können"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:24
 msgid ""
 "Enter the email addresses of people attending this event who know you. We'll "
 "ask them by email whether they vouch for you."
 msgstr ""
+"Gib die E-Mail-Adressen von Personen an, die an dieser Veranstaltung "
+"teilnehmen und dich kennen. Wir fragen sie per E-Mail, ob sie für dich bürgen."
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:36
 msgid "About you"
-msgstr ""
+msgstr "Über dich"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:43
 msgid "Go back"
-msgstr ""
+msgstr "Zurück"
 
 #: pretix_vetting/templates/pretix_vetting/checkout_vetting.html:48
 msgid "Continue"
-msgstr ""
+msgstr "Weiter"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:6
 msgid ""
 "Orders that are waiting for approval and their vouches. Flagged applications "
 "are listed first."
 msgstr ""
+"Bestellungen, die auf Freigabe warten, und ihre Bürgschaften. Markierte "
+"Bewerbungen werden zuerst aufgeführt."
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:19
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:29
 msgid "Order"
-msgstr ""
+msgstr "Bestellung"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:20
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:21
 msgid "Order date"
-msgstr ""
+msgstr "Bestelldatum"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:22
 msgid "Vouches"
-msgstr ""
+msgstr "Bürgschaften"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:23
 msgid "Negative"
-msgstr ""
+msgstr "Negativ"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:24
 msgid "Waiting"
-msgstr ""
+msgstr "Ausstehend"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:43
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:7
 #: pretix_vetting/views.py:336
 msgid "Needs review"
-msgstr ""
+msgstr "Prüfung nötig"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:45
 #: pretix_vetting/views.py:337
 msgid "Ready"
-msgstr ""
+msgstr "Bereit"
 
 #: pretix_vetting/templates/pretix_vetting/control_list.html:56
 msgid "No applications match."
-msgstr ""
+msgstr "Keine passenden Bewerbungen."
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:13
 #, python-format
@@ -347,34 +387,36 @@ msgid ""
 "%(yes)s of %(threshold)s vouches, %(no)s negative, %(pending)s waiting for "
 "an answer."
 msgstr ""
+"%(yes)s von %(threshold)s Bürgschaften, %(no)s negativ, %(pending)s warten "
+"auf Antwort."
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:18
 msgid "Motivation"
-msgstr ""
+msgstr "Motivation"
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:27
 msgid "Method"
-msgstr ""
+msgstr "Methode"
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:30
 msgid "State"
-msgstr ""
+msgstr "Status"
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:31
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:32
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:69
 msgid "Resend"
-msgstr ""
+msgstr "Erneut senden"
 
 #: pretix_vetting/templates/pretix_vetting/order_info.html:5
 msgid "Your application"
-msgstr ""
+msgstr "Deine Bewerbung"
 
 #: pretix_vetting/templates/pretix_vetting/order_info.html:9
 #, python-format
@@ -385,11 +427,15 @@ msgid_plural ""
 "Your application is being reviewed. %(received)s of %(needed)s vouches "
 "received."
 msgstr[0] ""
+"Deine Bewerbung wird geprüft. %(received)s von %(needed)s Bürgschaft "
+"erhalten."
 msgstr[1] ""
+"Deine Bewerbung wird geprüft. %(received)s von %(needed)s Bürgschaften "
+"erhalten."
 
 #: pretix_vetting/templates/pretix_vetting/order_info.html:21
 msgid "Your invite codes"
-msgstr ""
+msgstr "Deine Einladungscodes"
 
 #: pretix_vetting/templates/pretix_vetting/order_info.html:25
 #, python-format
@@ -398,69 +444,78 @@ msgid ""
 "they order their ticket at <a href=\"%(event_url)s\">%(event_url)s</a>. Each "
 "code can be used once."
 msgstr ""
+"Mit diesen Codes kannst du Personen einladen, die du kennst. Sie geben den "
+"Code bei der Ticketbestellung unter <a href=\"%(event_url)s\">%(event_url)s</"
+"a> ein. Jeder Code kann einmal verwendet werden."
 
 #: pretix_vetting/templates/pretix_vetting/order_info.html:35
 msgid "used"
-msgstr ""
+msgstr "verwendet"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:4
 #: pretix_vetting/templates/pretix_vetting/settings.html:6
 msgid "Vetting settings"
-msgstr ""
+msgstr "Bürgschaftseinstellungen"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:8
 msgid ""
 "Orders for the selected products wait for approval until existing attendees "
 "vouch for the applicant. You can always approve or deny an order yourself."
 msgstr ""
+"Bestellungen für die ausgewählten Produkte warten auf Freigabe, bis "
+"bisherige Teilnehmende für die bewerbende Person bürgen. Du kannst eine "
+"Bestellung jederzeit selbst freigeben oder ablehnen."
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:17
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:23
 #: pretix_vetting/views.py:52
 msgid "Who can vouch"
-msgstr ""
+msgstr "Wer bürgen kann"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:30
 msgid "Decision"
-msgstr ""
+msgstr "Entscheidung"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:44
 msgid "Invites"
-msgstr ""
+msgstr "Einladungen"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:48
 msgid "Emails"
-msgstr ""
+msgstr "E-Mails"
 
 #: pretix_vetting/templates/pretix_vetting/settings.html:56
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:4
 msgid "Vouch for an applicant"
-msgstr ""
+msgstr "Für eine bewerbende Person bürgen"
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:6
 #, python-format
 msgid "Do you know %(applicant)s?"
-msgstr ""
+msgstr "Kennst du %(applicant)s?"
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:9
 msgid "You already answered this request. Thank you!"
-msgstr ""
+msgstr "Du hast diese Anfrage bereits beantwortet. Vielen Dank!"
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:13
 msgid ""
 "This request has expired. If you still want to vouch for them, please "
 "contact the organizers."
 msgstr ""
+"Diese Anfrage ist abgelaufen. Wenn du trotzdem für diese Person bürgen "
+"möchtest, wende dich bitte an den Veranstalter."
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:17
 msgid "This application has already been decided. There is nothing left to do."
 msgstr ""
+"Über diese Bewerbung wurde bereits entschieden. Es ist nichts mehr zu tun."
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:21
 #, python-format
@@ -468,15 +523,18 @@ msgid ""
 "<strong>%(applicant)s</strong> would like to attend %(event)s and named you "
 "as someone who can vouch for them. Only the organizers will see your answer."
 msgstr ""
+"<strong>%(applicant)s</strong> möchte an %(event)s teilnehmen und hat dich "
+"als Person angegeben, die für sie oder ihn bürgen kann. Nur der Veranstalter sieht "
+"deine Antwort."
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:29
 msgid "Why they want to join"
-msgstr ""
+msgstr "Warum die Person teilnehmen möchte"
 
 #: pretix_vetting/templates/pretix_vetting/vouch.html:35
 #, python-format
 msgid "Please answer by %(date)s."
-msgstr ""
+msgstr "Bitte antworte bis %(date)s."
 
 #: pretix_vetting/views.py:22
 #, python-brace-format
@@ -484,162 +542,179 @@ msgid ""
 "Available placeholders: {applicant}, {event}, {url} (the page where they "
 "answer) and {deadline}."
 msgstr ""
+"Verfügbare Platzhalter: {applicant}, {event}, {url} (die Seite, auf der "
+"geantwortet wird) und {deadline}."
 
 #: pretix_vetting/views.py:30
 msgid "Products that need vetting"
-msgstr ""
+msgstr "Produkte, die Bürgschaften erfordern"
 
 #: pretix_vetting/views.py:34
 msgid ""
 "Orders that contain one of these products need vouches before they are "
 "approved. The products must require approval."
 msgstr ""
+"Bestellungen, die eines dieser Produkte enthalten, benötigen Bürgschaften, "
+"bevor sie freigegeben werden. Die Produkte müssen eine Freigabe erfordern."
 
 #: pretix_vetting/views.py:40
 msgid "References: applicants name attendees who know them"
 msgstr ""
+"Referenzen: Bewerbende nennen Teilnehmende, die sie kennen"
 
 #: pretix_vetting/views.py:41
 msgid "Invites: attendees hand out invite codes"
-msgstr ""
+msgstr "Einladungen: Teilnehmende verteilen Einladungscodes"
 
 #: pretix_vetting/views.py:43
 msgid "Methods"
-msgstr ""
+msgstr "Methoden"
 
 #: pretix_vetting/views.py:49
 msgid "Approved attendees of this event"
-msgstr ""
+msgstr "Freigegebene Teilnehmende dieser Veranstaltung"
 
 #: pretix_vetting/views.py:50
 msgid "Attendees of past events of this organizer"
-msgstr ""
+msgstr "Teilnehmende vergangener Veranstaltungen dieses Veranstalters"
 
 #: pretix_vetting/views.py:57
 msgid "Only paid orders can vouch"
-msgstr ""
+msgstr "Nur bezahlte Bestellungen können bürgen"
 
 #: pretix_vetting/views.py:59
 msgid "Otherwise approved orders that are not paid yet can vouch too."
 msgstr ""
+"Andernfalls können auch freigegebene, noch nicht bezahlte Bestellungen "
+"bürgen."
 
 #: pretix_vetting/views.py:63
 msgid "Products that allow vouching"
-msgstr ""
+msgstr "Produkte, die zum Bürgen berechtigen"
 
 #: pretix_vetting/views.py:67
 msgid ""
 "If you select products, only orders of this event containing one of them can "
 "vouch. Orders of past events are not restricted by product."
 msgstr ""
+"Wenn du Produkte auswählst, können nur Bestellungen dieser Veranstaltung "
+"bürgen, die eines davon enthalten. Bestellungen vergangener Veranstaltungen "
+"werden nicht nach Produkt eingeschränkt."
 
 #: pretix_vetting/views.py:72
 msgid "Minimum number of references"
-msgstr ""
+msgstr "Mindestanzahl an Referenzen"
 
 #: pretix_vetting/views.py:77
 msgid "Maximum number of references"
-msgstr ""
+msgstr "Höchstanzahl an Referenzen"
 
 #: pretix_vetting/views.py:82
 msgid "Vouches needed"
-msgstr ""
+msgstr "Benötigte Bürgschaften"
 
 #: pretix_vetting/views.py:85
 msgid "An invite code counts as one vouch."
-msgstr ""
+msgstr "Ein Einladungscode zählt als eine Bürgschaft."
 
 #: pretix_vetting/views.py:89
 msgid "Approve the order automatically"
-msgstr ""
+msgstr "Bestellung automatisch freigeben"
 
 #: pretix_vetting/views.py:90
 msgid "Only show it to the organizer"
-msgstr ""
+msgstr "Nur dem Veranstalter anzeigen"
 
 #: pretix_vetting/views.py:92
 msgid "When enough people vouched"
-msgstr ""
+msgstr "Wenn genügend Personen gebürgt haben"
 
 #: pretix_vetting/views.py:96
 msgid "Hold the application for the organizer"
-msgstr ""
+msgstr "Bewerbung für den Veranstalter zurückhalten"
 
 #: pretix_vetting/views.py:97
 msgid "Deny the order automatically"
-msgstr ""
+msgstr "Bestellung automatisch ablehnen"
 
 #: pretix_vetting/views.py:99
 msgid "When someone doesn't vouch"
-msgstr ""
+msgstr "Wenn jemand nicht bürgt"
 
 #: pretix_vetting/views.py:100
 msgid "Answering \"I don't know them\" doesn't count as not vouching."
 msgstr ""
+"Die Antwort „Ich kenne die Person nicht“ zählt nicht als verweigerte "
+"Bürgschaft."
 
 #: pretix_vetting/views.py:103
 msgid "Negative answers before denying"
-msgstr ""
+msgstr "Negative Antworten bis zur Ablehnung"
 
 #: pretix_vetting/views.py:108
 msgid "Invite codes per attendee"
-msgstr ""
+msgstr "Einladungscodes pro teilnehmender Person"
 
 #: pretix_vetting/views.py:112
 msgid ""
 "Attendees get these codes once their vetted order is approved (or paid, if "
 "only paid orders can vouch)."
 msgstr ""
+"Teilnehmende erhalten diese Codes, sobald ihre geprüfte Bestellung "
+"freigegeben ist (oder bezahlt, falls nur bezahlte Bestellungen bürgen "
+"können)."
 
 #: pretix_vetting/views.py:117
 msgid "Maximum vouches per attendee"
-msgstr ""
+msgstr "Maximale Bürgschaften pro teilnehmender Person"
 
 #: pretix_vetting/views.py:119
 msgid "0 means unlimited. Invites are limited separately."
-msgstr ""
+msgstr "0 bedeutet unbegrenzt. Einladungen werden separat begrenzt."
 
 #: pretix_vetting/views.py:122
 msgid "Days to answer"
-msgstr ""
+msgstr "Tage zum Antworten"
 
 #: pretix_vetting/views.py:126
 msgid ""
 "Requests that are not answered in time expire, and the application is "
 "flagged for the organizer."
 msgstr ""
+"Anfragen, die nicht rechtzeitig beantwortet werden, laufen ab, und die "
+"Bewerbung wird für den Veranstalter markiert."
 
 #: pretix_vetting/views.py:131
 msgid "Send a reminder after this many days"
-msgstr ""
+msgstr "Erinnerung nach so vielen Tagen senden"
 
 #: pretix_vetting/views.py:134
 msgid "0 disables reminders."
-msgstr ""
+msgstr "0 deaktiviert Erinnerungen."
 
 #: pretix_vetting/views.py:137
 msgid "Ask applicants why they want to join"
-msgstr ""
+msgstr "Bewerbende fragen, warum sie teilnehmen möchten"
 
 #: pretix_vetting/views.py:139
 msgid "The answer is shown to the people asked to vouch."
-msgstr ""
+msgstr "Die Antwort wird den um eine Bürgschaft gebetenen Personen angezeigt."
 
 #: pretix_vetting/views.py:142
 msgid "Subject of the request email"
-msgstr ""
+msgstr "Betreff der Anfrage-E-Mail"
 
 #: pretix_vetting/views.py:147
 msgid "Text of the request email"
-msgstr ""
+msgstr "Text der Anfrage-E-Mail"
 
 #: pretix_vetting/views.py:153
 msgid "Subject of the reminder email"
-msgstr ""
+msgstr "Betreff der Erinnerungs-E-Mail"
 
 #: pretix_vetting/views.py:158
 msgid "Text of the reminder email"
-msgstr ""
+msgstr "Text der Erinnerungs-E-Mail"
 
 #: pretix_vetting/views.py:182
 #, python-brace-format
@@ -647,51 +722,55 @@ msgid ""
 "These products don't require approval, so their orders wouldn't wait for "
 "vouches: {products}"
 msgstr ""
+"Diese Produkte erfordern keine Freigabe, daher würden ihre Bestellungen "
+"nicht auf Bürgschaften warten: {products}"
 
 #: pretix_vetting/views.py:187
 msgid "Select at least one method."
-msgstr ""
+msgstr "Wähle mindestens eine Methode aus."
 
 #: pretix_vetting/views.py:190
 msgid "Select who is allowed to vouch."
-msgstr ""
+msgstr "Wähle aus, wer bürgen darf."
 
 #: pretix_vetting/views.py:198
 msgid "The minimum can't be higher than the maximum."
-msgstr ""
+msgstr "Das Minimum darf nicht größer als das Maximum sein."
 
 #: pretix_vetting/views.py:222
 msgid "I vouch for them"
-msgstr ""
+msgstr "Ich bürge für die Person"
 
 #: pretix_vetting/views.py:223
 msgid "I don't vouch for them"
-msgstr ""
+msgstr "Ich bürge nicht für die Person"
 
 #: pretix_vetting/views.py:224
 msgid "I don't know them"
-msgstr ""
+msgstr "Ich kenne die Person nicht"
 
 #: pretix_vetting/views.py:229
 msgid "Comment for the organizers"
-msgstr ""
+msgstr "Kommentar für den Veranstalter"
 
 #: pretix_vetting/views.py:230
 msgid "Optional. Only the organizers see this, not the applicant."
 msgstr ""
+"Optional. Nur der Veranstalter sieht diesen Kommentar, nicht die bewerbende "
+"Person."
 
 #: pretix_vetting/views.py:271
 msgid "Thank you, we've recorded your answer."
-msgstr ""
+msgstr "Vielen Dank, wir haben deine Antwort gespeichert."
 
 #: pretix_vetting/views.py:335
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: pretix_vetting/views.py:338
 msgid "Waiting for answers"
-msgstr ""
+msgstr "Wartet auf Antworten"
 
 #: pretix_vetting/views.py:355
 msgid "The request has been sent again."
-msgstr ""
+msgstr "Die Anfrage wurde erneut gesendet."
