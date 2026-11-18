@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 19:58+0000\n"
+"POT-Creation-Date: 2026-11-18 20:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,10 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: pretix_vetting/apps.py:17 pretix_vetting/apps.py:28
-#: pretix_vetting/signals.py:111 pretix_vetting/signals.py:279
+#: pretix_vetting/signals.py:114 pretix_vetting/signals.py:285
 #: pretix_vetting/templates/pretix_vetting/control_list.html:3
 #: pretix_vetting/templates/pretix_vetting/control_list.html:5
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:5
+#: pretix_vetting/templates/pretix_vetting/voucher_form.html:4
 msgid "Vetting"
 msgstr ""
 
@@ -103,6 +104,17 @@ msgstr ""
 msgid "Please enter your invite code."
 msgstr ""
 
+#: pretix_vetting/forms.py:127
+msgid "Skip vetting"
+msgstr ""
+
+#: pretix_vetting/forms.py:135
+msgid ""
+"Orders that use this voucher for a product that needs vetting don't need "
+"anyone to vouch for them. If nothing else in the order needs approval, the "
+"order is approved right away."
+msgstr ""
+
 #: pretix_vetting/models.py:33
 #: pretix_vetting/templates/pretix_vetting/control_order_info.html:28
 msgid "Reference"
@@ -137,16 +149,16 @@ msgstr ""
 msgid "Expired"
 msgstr ""
 
-#: pretix_vetting/services.py:254
+#: pretix_vetting/services.py:303
 msgid "Unfortunately, we could not confirm your application."
 msgstr ""
 
-#: pretix_vetting/signals.py:58
+#: pretix_vetting/signals.py:61
 #, python-brace-format
 msgid "Do you know {applicant}?"
 msgstr ""
 
-#: pretix_vetting/signals.py:65
+#: pretix_vetting/signals.py:68
 #, python-brace-format
 msgid ""
 "Hello,\n"
@@ -164,12 +176,12 @@ msgid ""
 "Your {event} team"
 msgstr ""
 
-#: pretix_vetting/signals.py:79
+#: pretix_vetting/signals.py:82
 #, python-brace-format
 msgid "Reminder: do you know {applicant}?"
 msgstr ""
 
-#: pretix_vetting/signals.py:86
+#: pretix_vetting/signals.py:89
 #, python-brace-format
 msgid ""
 "Hello,\n"
@@ -183,64 +195,69 @@ msgid ""
 "Your {event} team"
 msgstr ""
 
-#: pretix_vetting/signals.py:158
+#: pretix_vetting/signals.py:161
 #, python-brace-format
 msgid "A vouch was requested from {email}."
 msgstr ""
 
-#: pretix_vetting/signals.py:160
+#: pretix_vetting/signals.py:163
 #, python-brace-format
 msgid "A reminder for a vouch request was sent to {email}."
 msgstr ""
 
-#: pretix_vetting/signals.py:163
+#: pretix_vetting/signals.py:166
 #, python-brace-format
 msgid "Someone answered a vouch request ({state})."
 msgstr ""
 
-#: pretix_vetting/signals.py:166
+#: pretix_vetting/signals.py:169
 #, python-brace-format
 msgid "The vouch request to {email} expired without an answer."
 msgstr ""
 
-#: pretix_vetting/signals.py:168
+#: pretix_vetting/signals.py:171
 #, python-brace-format
 msgid "The invite code {code} was used."
 msgstr ""
 
-#: pretix_vetting/signals.py:170
+#: pretix_vetting/signals.py:173
 #, python-brace-format
 msgid ""
 "The invite code {code} could not be used, it was already used or doesn't "
 "exist."
 msgstr ""
 
-#: pretix_vetting/signals.py:173
+#: pretix_vetting/signals.py:176
 #, python-brace-format
 msgid "The application was flagged for review ({reason})."
 msgstr ""
 
-#: pretix_vetting/signals.py:176
+#: pretix_vetting/signals.py:179
 #, python-brace-format
 msgid "Enough people vouched for this application ({yes})."
 msgstr ""
 
-#: pretix_vetting/signals.py:179
+#: pretix_vetting/signals.py:182
 #, python-brace-format
 msgid "The order was approved because enough people vouched ({yes})."
 msgstr ""
 
-#: pretix_vetting/signals.py:182
+#: pretix_vetting/signals.py:185
 #, python-brace-format
 msgid "The order was denied because people didn't vouch ({no})."
 msgstr ""
 
-#: pretix_vetting/signals.py:185
+#: pretix_vetting/signals.py:188
 #, python-brace-format
 msgid "The vouches could not be applied to the order: {error}"
 msgstr ""
 
-#: pretix_vetting/signals.py:261
+#: pretix_vetting/signals.py:191
+#, python-brace-format
+msgid "No vetting needed, the order used a voucher that skips it ({codes})."
+msgstr ""
+
+#: pretix_vetting/signals.py:267
 #, python-brace-format
 msgid "{yes}/{threshold} vouches, {no} negative, {pending} waiting."
 msgstr ""

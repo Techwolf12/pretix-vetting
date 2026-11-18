@@ -24,6 +24,10 @@ either approved automatically or the application is marked as ready for you. Whe
 application is either held for you to review or, after a number of negative answers, denied. You can always approve or
 deny an order yourself.
 
+To let someone in without vetting, create a voucher and tick *Skip vetting* (also available when creating vouchers in
+bulk). Orders that use such a voucher for every product that needs vetting skip the vetting step at checkout and are
+approved right away, unless something else in the order still needs approval.
+
 Unanswered requests get a reminder and expire after a configurable number of days. Expiry needs pretix's periodic
 task (``runperiodic``) to run.
 
