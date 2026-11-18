@@ -106,3 +106,11 @@ class Invite(models.Model):
     @property
     def is_used(self):
         return self.used_at is not None
+
+
+class BypassVoucher(models.Model):
+    voucher = models.OneToOneField(
+        "pretixbase.Voucher",
+        on_delete=models.CASCADE,
+        related_name="vetting_bypass",
+    )

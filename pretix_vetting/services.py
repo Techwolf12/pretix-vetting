@@ -13,7 +13,7 @@ from pretix.base.services.orders import OrderError, approve_order, deny_order
 from pretix.helpers.database import OF_SELF
 from pretix.multidomain.urlreverse import eventreverse_absolute
 
-from .models import Invite, VettingApplication, Vouch
+from .models import BypassVoucher, Invite, VettingApplication, Vouch
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,26 @@ def vetted_positions(order: Order):
 
 def order_needs_vetting(order: Order) -> bool:
     return bool(vetted_positions(order))
+
+
+def bypassed(positions) -> set:
+    voucher_ids = {p.voucher_id for p in positions if p.voucher_id}
+    if not voucher_ids:
+        return set()
+    bypass_ids = set(
+        BypassVoucher.objects.filter(voucher_id__in=voucher_ids).values_list(
+            "voucher_id", flat=True
+        )
+    )
+    return {p.pk for p in positions if p.voucher_id in bypass_ids}
+
+
+def positions_to_vet(event: Event, positions) -> list:
+    """Vetted positions not bought with a voucher that skips vetting."""
+    products = event.settings.vetting__products
+    vetted = [p for p in positions if str(p.item_id) in products]
+    skip = bypassed(vetted)
+    return [p for p in vetted if p.pk not in skip]
 
 
 def is_pending_approval(order: Order) -> bool:
@@ -203,8 +223,37 @@ def add_reference(order: Order, email: str) -> Vouch:
     return vouch
 
 
+def needs_approval(position) -> bool:
+    return position.item.require_approval or (
+        position.variation is not None and position.variation.require_approval
+    )
+
+
+def skip_vetting(order: Order):
+    positions = list(order.positions.select_related("item", "variation", "voucher"))
+    skip = bypassed(positions)
+    codes = sorted({p.voucher.code for p in positions if p.pk in skip})
+    order.log_action("pretix_vetting.application.bypassed", data={"codes": codes})
+    if any(needs_approval(p) for p in positions if p.pk not in skip):
+        return
+    with scope(organizer=order.event.organizer), transaction.atomic():
+        order = Order.objects.select_for_update(of=OF_SELF).get(pk=order.pk)
+        if not is_pending_approval(order):
+            return
+        try:
+            approve_order(order)
+        except OrderError as e:
+            logger.info("Could not approve order %s: %s", order.code, e)
+            order.log_action(
+                "pretix_vetting.application.decision_failed", data={"error": str(e)}
+            )
+
+
 def start_application(order: Order, data: dict):
     if not order_needs_vetting(order):
+        return
+    if not positions_to_vet(order.event, list(order.positions.all())):
+        skip_vetting(order)
         return
     application = get_application(order)
     if data.get("motivation"):

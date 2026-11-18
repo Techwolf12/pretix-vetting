@@ -21,6 +21,8 @@ from pretix.control.signals import (
     nav_event_settings,
     order_approve_info,
     order_info as control_order_info,
+    voucher_form_class,
+    voucher_form_html,
 )
 from pretix.multidomain.urlreverse import eventreverse_absolute
 from pretix.presale.signals import (
@@ -33,6 +35,7 @@ from pretix.presale.views.cart import cart_session
 
 from . import services
 from .checkoutflow import VettingStep, cart_needs_vetting
+from .forms import voucher_form_with_bypass
 from .models import VettingApplication, Vouch
 
 logger = logging.getLogger(__name__)
@@ -184,6 +187,9 @@ def on_periodic_task(sender, **kwargs):
         "pretix_vetting.application.decision_failed": _(
             "The vouches could not be applied to the order: {error}"
         ),
+        "pretix_vetting.application.bypassed": _(
+            "No vetting needed, the order used a voucher that skips it ({codes})."
+        ),
     }
 )
 class VettingOrderLogEntryType(OrderLogEntryType):
@@ -289,3 +295,16 @@ def on_nav_event(sender: Event, request, **kwargs):
             "icon": "user-plus",
         }
     ]
+
+
+@receiver(voucher_form_class, dispatch_uid="pretix_vetting_voucher_form_class")
+def on_voucher_form_class(sender: Event, cls, **kwargs):
+    return voucher_form_with_bypass(cls)
+
+
+@receiver(voucher_form_html, dispatch_uid="pretix_vetting_voucher_form_html")
+def on_voucher_form_html(sender: Event, form, **kwargs):
+    if "vetting_bypass" not in form.fields:
+        return ""
+    template = get_template("pretix_vetting/voucher_form.html")
+    return template.render({"form": form})

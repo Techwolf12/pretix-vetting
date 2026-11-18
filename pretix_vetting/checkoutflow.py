@@ -7,13 +7,13 @@ from pretix.presale.views import CartMixin, get_cart
 from pretix.presale.views.cart import cart_session
 
 from .forms import VettingForm
+from .services import positions_to_vet
 
 
 def cart_needs_vetting(request) -> bool:
-    products = request.event.settings.vetting__products
-    if not products:
+    if not request.event.settings.vetting__products:
         return False
-    return any(str(p.item_id) in products for p in get_cart(request))
+    return bool(positions_to_vet(request.event, list(get_cart(request))))
 
 
 class VettingStep(CartMixin, TemplateFlowStep):

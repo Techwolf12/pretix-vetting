@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _, ngettext
 
-from .models import Invite
+from .models import BypassVoucher, Invite
 
 
 class VettingForm(forms.Form):
@@ -116,3 +116,41 @@ class VettingForm(forms.Form):
         for i, email in enumerate(data.get("references") or []):
             initial[f"reference_{i}"] = email
         return initial
+
+
+def voucher_form_with_bypass(cls):
+    class VettingVoucherForm(cls):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            instance = getattr(self, "instance", None)
+            self.fields["vetting_bypass"] = forms.BooleanField(
+                label=_("Skip vetting"),
+                required=False,
+                initial=bool(
+                    instance
+                    and instance.pk
+                    and BypassVoucher.objects.filter(voucher=instance).exists()
+                ),
+                help_text=_(
+                    "Orders that use this voucher for a product that needs vetting don't "
+                    "need anyone to vouch for them. If nothing else in the order needs "
+                    "approval, the order is approved right away."
+                ),
+            )
+
+        def save(self, *args, **kwargs):
+            voucher = super().save(*args, **kwargs)
+            if self.cleaned_data.get("vetting_bypass"):
+                BypassVoucher.objects.get_or_create(voucher=self.instance)
+            else:
+                BypassVoucher.objects.filter(voucher=self.instance).delete()
+            return voucher
+
+        def post_bulk_save(self, objs):
+            super().post_bulk_save(objs)
+            if self.cleaned_data.get("vetting_bypass"):
+                BypassVoucher.objects.bulk_create(
+                    [BypassVoucher(voucher=v) for v in objs], ignore_conflicts=True
+                )
+
+    return VettingVoucherForm
